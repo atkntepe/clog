@@ -1,6 +1,6 @@
 # clog
 
-A minimal CLI tool for developers who want to see what they actually shipped — across multiple repos — without opening GitHub.
+A minimal CLI tool for developers who want to see what they actually shipped, across multiple repos, without opening GitHub.
 
 Run `clog` at the end of the day to see a clean list of your commits. Run `clog sum` to get an AI-generated summary ready to paste into your standup, PR description, or team update.
 
@@ -12,7 +12,7 @@ Run `clog` at the end of the day to see a clean list of your commits. Run `clog 
 - Groups output cleanly by repo
 - Filters to your commits only
 - AI-powered summaries via Claude (optional)
-- Zero external dependencies — pure Go, single binary
+- Zero external dependencies - pure Go, single binary
 
 ---
 
@@ -25,7 +25,7 @@ go build -o clog .
 cp clog /usr/local/bin/clog
 ```
 
-Requires Go 1.21+.
+Requires Go 1.25+.
 
 ---
 
@@ -108,7 +108,7 @@ With `clog sum`:
 
 ## Configuration
 
-Config is stored at `~/.config/clog/config.json`. It contains only repo paths and your author name — **no secrets are ever written to disk**.
+Config is stored at `~/.config/clog/config.json`. It contains only repo paths and your author name. **No secrets are ever written to disk.**
 
 ```json
 {
@@ -126,7 +126,7 @@ The Anthropic API key is read exclusively from the `ANTHROPIC_API_KEY` environme
 
 ## Why clog?
 
-Most days you open your standup message and stare at a blank field trying to remember what you did. `clog` solves that — it's a one-command answer to *"what did I ship today?"*
+Most days you open your standup message and stare at a blank field trying to remember what you did. `clog` solves that. It's a one-command answer to *"what did I ship today?"*
 
 ---
 

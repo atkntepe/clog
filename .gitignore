@@ -2,7 +2,7 @@
 clog
 dist/
 
-# Environment files — never commit secrets
+# Environment files - never commit secrets
 .env
 .env.*
 *.env
