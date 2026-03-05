@@ -81,7 +81,7 @@ func SaveConfig(cfg *Config) error {
 	return os.WriteFile(p, data, 0644)
 }
 
-const defaultModel = "claude-sonnet-4-20250514"
+const defaultModel = "claude-haiku-4-5-20251001"
 
 func EnvPath() (string, error) {
 	home, err := os.UserHomeDir()

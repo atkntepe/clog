@@ -48,7 +48,7 @@ clog config --author "Your Name"
 clog config --api-key "your-key"
 ```
 
-**Optionally set a different model** (defaults to `claude-sonnet-4-20250514`):
+**Optionally set a different model** (defaults to `claude-haiku-4-5-20251001`):
 ```bash
 clog config --model "claude-haiku-4-5-20251001"
 ```
@@ -125,7 +125,7 @@ Config is stored at `~/.config/clog/config.json`. It contains repo paths, your a
 ```json
 {
   "author": "Your Name",
-  "model": "claude-sonnet-4-20250514",
+  "model": "claude-haiku-4-5-20251001",
   "repos": [
     { "name": "frontend", "path": "/Users/you/projects/frontend" },
     { "name": "api", "path": "/Users/you/projects/api" }
