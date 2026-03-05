@@ -53,13 +53,13 @@ func formatCommits(commits []Commit) string {
 	return strings.TrimRight(sb.String(), "\n")
 }
 
-func Summarize(commits []Commit, apiKey string) (string, error) {
+func Summarize(commits []Commit, apiKey string, model string) (string, error) {
 	if apiKey == "" {
-		return "", fmt.Errorf("API key not found. Set it in your shell profile:\nexport ANTHROPIC_API_KEY=\"sk-ant-xxx\"")
+		return "", fmt.Errorf("API key not found. Run: clog config --api-key \"your-key\"")
 	}
 
 	reqBody := apiRequest{
-		Model:   "claude-sonnet-4-20250514",
+		Model:   model,
 		MaxToks: 300,
 		System:  "You are a developer assistant. Summarize the following git commits into 2-4 sentences written in first person, past tense, suitable for a daily standup or async team update. Be concise. Focus on what changed and why it matters, not technical details. Do not use bullet points. Output plain text only.",
 		Messages: []apiMessage{

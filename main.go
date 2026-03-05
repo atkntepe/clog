@@ -54,13 +54,14 @@ func main() {
 		apiKey := GetAPIKey()
 		if apiKey == "" {
 			fmt.Println()
-			fmt.Println("API key not found. Set it in your shell profile:")
-			fmt.Println(`export ANTHROPIC_API_KEY="sk-ant-xxx"`)
+			fmt.Println("API key not found. Run:")
+			fmt.Println(`  clog config --api-key "your-key"`)
 			return
 		}
 
 		fmt.Println()
-		summary, err := Summarize(commits, apiKey)
+		model := GetModel(cfg)
+		summary, err := Summarize(commits, apiKey, model)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error generating summary: %v\n", err)
 			os.Exit(1)
@@ -84,8 +85,8 @@ func printWelcome() {
 	fmt.Println("  Add a repo:       clog repo --add my-project /path/to/repo")
 	fmt.Println(`  Set your name:    clog config --author "Your Name"`)
 	fmt.Println()
-	fmt.Println("  For AI summaries, set your Anthropic API key in your shell profile:")
-	fmt.Println(`  export ANTHROPIC_API_KEY="sk-ant-xxx"`)
+	fmt.Println("  For AI summaries:")
+	fmt.Println(`  clog config --api-key "your-key"`)
 	fmt.Println("  Then run: clog sum")
 }
 
@@ -93,9 +94,11 @@ func printUsage() {
 	fmt.Println("Usage:")
 	fmt.Println("  clog                          Show today's commits")
 	fmt.Println("  clog week                     Show this week's commits")
-	fmt.Println("  clog sum                      Show today's commits + AI summary")
-	fmt.Println("  clog sum --week               Show this week's commits + AI summary")
+	fmt.Println("  clog sum                       Show today's commits + AI summary")
+	fmt.Println("  clog sum --week                Show this week's commits + AI summary")
 	fmt.Println(`  clog config --author <name>    Set git author name`)
+	fmt.Println(`  clog config --api-key <key>    Set Anthropic API key`)
+	fmt.Println(`  clog config --model <model>    Set AI model`)
 	fmt.Println("  clog repo --add <name> <path>  Add a repo")
 	fmt.Println("  clog repo --remove <name>      Remove a repo")
 	fmt.Println("  clog repo --list               List tracked repos")
@@ -120,17 +123,45 @@ func showCommits(cfg *Config, since time.Time) {
 }
 
 func handleConfig(cfg *Config, args []string) {
-	if len(args) < 2 || args[0] != "--author" {
-		fmt.Println(`Usage: clog config --author <name>`)
+	if len(args) < 2 {
+		printConfigUsage()
 		return
 	}
-	name := args[1]
-	cfg.Author = name
-	if err := SaveConfig(cfg); err != nil {
-		fmt.Fprintf(os.Stderr, "Error saving config: %v\n", err)
-		os.Exit(1)
+
+	switch args[0] {
+	case "--author":
+		cfg.Author = args[1]
+		if err := SaveConfig(cfg); err != nil {
+			fmt.Fprintf(os.Stderr, "Error saving config: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("Author set to \"%s\"\n", args[1])
+
+	case "--api-key":
+		if err := SaveEnvValue("ANTHROPIC_API_KEY", args[1]); err != nil {
+			fmt.Fprintf(os.Stderr, "Error saving API key: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Println("API key saved")
+
+	case "--model":
+		cfg.Model = args[1]
+		if err := SaveConfig(cfg); err != nil {
+			fmt.Fprintf(os.Stderr, "Error saving config: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("Model set to \"%s\"\n", args[1])
+
+	default:
+		printConfigUsage()
 	}
-	fmt.Printf("Author set to \"%s\"\n", name)
+}
+
+func printConfigUsage() {
+	fmt.Println("Usage:")
+	fmt.Println(`  clog config --author <name>     Set git author name`)
+	fmt.Println(`  clog config --api-key <key>     Set Anthropic API key`)
+	fmt.Println(`  clog config --model <model>     Set AI model`)
 }
 
 func handleRepo(cfg *Config, args []string) {

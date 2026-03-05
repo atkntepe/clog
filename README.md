@@ -43,9 +43,14 @@ clog repo --add mobile ~/projects/my-mobile
 clog config --author "Your Name"
 ```
 
-**For AI summaries**, add your Anthropic API key to your shell profile (`~/.zshrc` or `~/.bashrc`):
+**For AI summaries**, set your Anthropic API key:
 ```bash
-export ANTHROPIC_API_KEY="sk-ant-xxx"
+clog config --api-key "your-key"
+```
+
+**Optionally set a different model** (defaults to `claude-sonnet-4-20250514`):
+```bash
+clog config --model "claude-haiku-4-5-20251001"
 ```
 
 ---
@@ -64,6 +69,13 @@ clog sum --week    # this week's commits + AI summary
 clog repo --list              # show all tracked repos
 clog repo --add name /path    # add a repo
 clog repo --remove name       # remove a repo
+```
+
+**Configuration:**
+```bash
+clog config --author "Your Name"       # set git author name
+clog config --api-key "your-key"       # set Anthropic API key
+clog config --model "model-name"       # set AI model
 ```
 
 ---
@@ -108,11 +120,12 @@ With `clog sum`:
 
 ## Configuration
 
-Config is stored at `~/.config/clog/config.json`. It contains only repo paths and your author name. **No secrets are ever written to disk.**
+Config is stored at `~/.config/clog/config.json`. It contains repo paths, your author name, and the model setting.
 
 ```json
 {
   "author": "Your Name",
+  "model": "claude-sonnet-4-20250514",
   "repos": [
     { "name": "frontend", "path": "/Users/you/projects/frontend" },
     { "name": "api", "path": "/Users/you/projects/api" }
@@ -120,7 +133,7 @@ Config is stored at `~/.config/clog/config.json`. It contains only repo paths an
 }
 ```
 
-The Anthropic API key is read exclusively from the `ANTHROPIC_API_KEY` environment variable and is never stored in the config file.
+The API key is stored separately in `~/.config/clog/.env` with restricted permissions (owner-only). Environment variables (`ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL`) override stored values if set.
 
 ---
 
