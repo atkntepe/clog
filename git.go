@@ -16,8 +16,8 @@ type Commit struct {
 
 func GetCommits(repoPath string, repoName string, since time.Time, author string) ([]Commit, error) {
 	sinceStr := since.Format("2006-01-02T15:04:05")
-	cmd := exec.Command("git", "-C", repoPath, "log", "--oneline",
-		"--since="+sinceStr, "--author="+author, "--format=%H|%s|%ci")
+	cmd := exec.Command("git", "-C", repoPath, "log",
+		"--since="+sinceStr, "--author="+author, "--format=%H%x00%s%x00%ci")
 
 	out, err := cmd.Output()
 	if err != nil {
@@ -28,7 +28,7 @@ func GetCommits(repoPath string, repoName string, since time.Time, author string
 	scanner := bufio.NewScanner(strings.NewReader(string(out)))
 	for scanner.Scan() {
 		line := scanner.Text()
-		parts := strings.Split(line, "|")
+		parts := strings.SplitN(line, "\x00", 3)
 		if len(parts) != 3 {
 			continue
 		}

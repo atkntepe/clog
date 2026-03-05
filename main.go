@@ -47,15 +47,15 @@ func main() {
 		commits := collectCommits(cfg, since)
 		PrintCommits(commits)
 
+		if len(commits) == 0 {
+			return
+		}
+
 		apiKey := GetAPIKey()
 		if apiKey == "" {
 			fmt.Println()
 			fmt.Println("API key not found. Set it in your shell profile:")
 			fmt.Println(`export ANTHROPIC_API_KEY="sk-ant-xxx"`)
-			return
-		}
-
-		if len(commits) == 0 {
 			return
 		}
 
@@ -150,6 +150,15 @@ func handleRepo(cfg *Config, args []string) {
 		}
 		name := args[1]
 		path := args[2]
+		for _, r := range cfg.Repos {
+			if r.Name == name {
+				fmt.Printf("Repo %s already exists\n", name)
+				return
+			}
+		}
+		if _, err := os.Stat(path); os.IsNotExist(err) {
+			fmt.Printf("Warning: path does not exist: %s\n", path)
+		}
 		cfg.Repos = append(cfg.Repos, RepoInfo{Name: name, Path: path})
 		if err := SaveConfig(cfg); err != nil {
 			fmt.Fprintf(os.Stderr, "Error saving config: %v\n", err)

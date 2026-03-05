@@ -16,13 +16,19 @@ type Config struct {
 	Repos  []RepoInfo `json:"repos"`
 }
 
-func ConfigPath() string {
-	home, _ := os.UserHomeDir()
-	return filepath.Join(home, ".config", "clog", "config.json")
+func ConfigPath() (string, error) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(home, ".config", "clog", "config.json"), nil
 }
 
 func LoadConfig() (*Config, error) {
-	p := ConfigPath()
+	p, err := ConfigPath()
+	if err != nil {
+		return nil, err
+	}
 
 	dir := filepath.Dir(p)
 	if err := os.MkdirAll(dir, 0755); err != nil {
@@ -55,7 +61,10 @@ func LoadConfig() (*Config, error) {
 }
 
 func SaveConfig(cfg *Config) error {
-	p := ConfigPath()
+	p, err := ConfigPath()
+	if err != nil {
+		return err
+	}
 
 	dir := filepath.Dir(p)
 	if err := os.MkdirAll(dir, 0755); err != nil {

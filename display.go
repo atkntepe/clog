@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 func PrintCommits(commits []Commit) {
 	if len(commits) == 0 {
@@ -39,6 +42,8 @@ func PrintSummaryBlock(summary string) {
 	fmt.Println(separator)
 	fmt.Println("  AI Summary")
 	fmt.Println()
-	fmt.Printf("  %s\n", summary)
+	for _, line := range strings.Split(summary, "\n") {
+		fmt.Printf("  %s\n", line)
+	}
 	fmt.Println(separator)
 }
